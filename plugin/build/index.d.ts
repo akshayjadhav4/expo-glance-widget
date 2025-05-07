@@ -1,5 +1,6 @@
 import { ConfigPlugin } from "@expo/config-plugins";
+import { WidgetProviderInfoParams } from "./types";
 declare const withGlance: ConfigPlugin<{
-    [key: string]: any;
+    widgetProviderInfo?: WidgetProviderInfoParams;
 }>;
 export default withGlance;

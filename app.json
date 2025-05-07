@@ -36,7 +36,18 @@
         }
       ],
       "expo-build-properties",
-      "./app.plugin.js"
+      [
+        "./app.plugin.js",
+        {
+          "widgetProviderInfo": {
+            "description": "@string/app_name",
+            "minWidth": "40dp",
+            "minHeight": "40dp",
+            "resizeMode": "horizontal|vertical",
+            "widgetCategory": "home_screen"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
