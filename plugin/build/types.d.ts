@@ -15,3 +15,6 @@ export interface WidgetProviderInfoParams {
     widgetCategory?: string;
     widgetFeatures?: string;
 }
+export type WidgetManifestOptions = {
+    widgetInfoXml: string;
+};
