@@ -27,6 +27,7 @@ const withWidgetProviderInfo = (config, params) => {
             const xmlContent = `<?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     ${attributes.join("\n    ")} />`;
+            // write the xml file
             const xmlPath = path_1.default.join(xmlDir, `${fileName}.xml`);
             fs_1.default.writeFileSync(xmlPath, xmlContent);
             return config;

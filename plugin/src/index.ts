@@ -1,6 +1,7 @@
 import { ConfigPlugin, withPlugins } from "@expo/config-plugins";
 import { WidgetProviderInfoParams } from "./types";
 import { withDependencies } from "./withDependencies";
+import { withWidgetCodeSync } from "./withWidgetCodeSync";
 import { withWidgetProviderInfo } from "./withWidgetProviderInfo";
 
 const withGlance: ConfigPlugin<{
@@ -9,6 +10,7 @@ const withGlance: ConfigPlugin<{
   return withPlugins(config, [
     withDependencies,
     [withWidgetProviderInfo, widgetProviderInfo],
+    withWidgetCodeSync,
   ]);
 };
 
