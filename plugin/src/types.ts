@@ -1,4 +1,5 @@
 export interface WidgetProviderInfoParams {
+  fileName: string;
   widgetName: string;
   updatePeriodMillis: number;
   description?: string;
