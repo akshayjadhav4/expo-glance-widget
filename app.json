@@ -39,16 +39,32 @@
       [
         "./app.plugin.js",
         {
-          "widgetProviderInfo": {
-            "fileName": "my_app_widget_info",
-            "description": "@string/app_name",
-            "minWidth": "128dp",
-            "minHeight": "50dp",
-            "minResizeWidth": "128dp",
-            "minResizeHeight": "50dp",
-            "resizeMode": "horizontal|vertical",
-            "widgetCategory": "home_screen"
-          }
+          "widgets": [
+            {
+              "widgetName": "HomeWidget",
+              "widgetProviderInfo": {
+                "description": "Home",
+                "minWidth": "128dp",
+                "minHeight": "50dp",
+                "minResizeWidth": "128dp",
+                "minResizeHeight": "50dp",
+                "resizeMode": "horizontal|vertical",
+                "widgetCategory": "home_screen"
+              }
+            },
+            {
+              "widgetName": "ToolbarWidget",
+              "widgetProviderInfo": {
+                "description": "Tools",
+                "minWidth": "128dp",
+                "minHeight": "50dp",
+                "minResizeWidth": "128dp",
+                "minResizeHeight": "50dp",
+                "resizeMode": "horizontal|vertical",
+                "widgetCategory": "home_screen"
+              }
+            }
+          ]
         }
       ]
     ],
