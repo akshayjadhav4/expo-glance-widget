@@ -3,6 +3,7 @@ import {
   WarningAggregator,
   withAppBuildGradle,
 } from "expo/config-plugins";
+import { findBlockEnd } from "./utils";
 
 const GLANCE_DEPENDENCIES = [
   {
@@ -81,25 +82,3 @@ export const withDependencies: ConfigPlugin = (config) => {
     return config;
   });
 };
-
-function findBlockEnd(contents: string, startIndex: number): number {
-  let openCount = 0;
-  let i = startIndex;
-
-  while (i < contents.length) {
-    const char = contents[i];
-
-    if (char === "{") {
-      openCount++;
-    } else if (char === "}") {
-      openCount--;
-      if (openCount === 0) {
-        return i;
-      }
-    }
-
-    i++;
-  }
-
-  return -1; // Not found
-}

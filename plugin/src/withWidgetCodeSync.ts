@@ -3,10 +3,11 @@ import fs from "fs";
 import path from "path";
 
 const WIDGET_SRC = "widgets";
-const FILES = [
+
+const getFiles = (widgetName: string, packageName: string) => [
   {
-    name: "MyAppWidget.kt",
-    template: (pkg: string) => `package ${pkg}.${WIDGET_SRC}
+    name: `${widgetName}.kt`,
+    content: `package ${packageName}.${WIDGET_SRC}
 
 import android.content.Context
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,7 @@ import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 
-class MyAppWidget : GlanceAppWidget() {
+class ${widgetName} : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
@@ -41,23 +42,30 @@ class MyAppWidget : GlanceAppWidget() {
 `,
   },
   {
-    name: "MyAppWidgetReceiver.kt",
-    template: (pkg: string) => `package ${pkg}.${WIDGET_SRC}
+    name: `${widgetName}Receiver.kt`,
+    content: `package ${packageName}.${WIDGET_SRC}
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 
-class MyAppWidgetReceiver : GlanceAppWidgetReceiver() {
-    override val glanceAppWidget: GlanceAppWidget = MyAppWidget()
+class ${widgetName}Receiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = ${widgetName}()
 }
 `,
   },
 ];
 
-export const withWidgetCodeSync: ConfigPlugin = (config) => {
+export const withWidgetCodeSync: ConfigPlugin<{ widgetName: string }> = (
+  config,
+  props
+) => {
   return withDangerousMod(config, [
     "android",
     async (config) => {
+      const { widgetName } = props;
+      if (!widgetName) {
+        throw new Error("Missing widgetName in plugin props.");
+      }
       // Base Path of android project
       const platformProjectRoot = config.modRequest.platformProjectRoot;
       // Base Path of the project
@@ -87,14 +95,17 @@ export const withWidgetCodeSync: ConfigPlugin = (config) => {
 
       // create the widgets/ folder if it doesn't exist at project root
       const widgetSrcPath = path.join(projectRoot, WIDGET_SRC);
-      if (!fs.existsSync(widgetSrcPath))
+      if (!fs.existsSync(widgetSrcPath)) {
         fs.mkdirSync(widgetSrcPath, { recursive: true });
+      }
+
+      const FILES = getFiles(widgetName, packageName);
 
       // create starter files in widgets/ if not already present
       for (const file of FILES) {
         const widgetFilePath = path.join(widgetSrcPath, file.name);
         if (!fs.existsSync(widgetFilePath)) {
-          fs.writeFileSync(widgetFilePath, file.template(packageName));
+          fs.writeFileSync(widgetFilePath, file.content);
         }
       }
 

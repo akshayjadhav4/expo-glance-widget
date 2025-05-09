@@ -7,13 +7,26 @@ import { withWidgetManifest } from "./withWidgetManifest";
 import { withWidgetProviderInfo } from "./withWidgetProviderInfo";
 
 const withGlance: ConfigPlugin<{
-  widgetProviderInfo: WidgetProviderInfoParams;
-}> = (config, { widgetProviderInfo }) => {
+  widgets: [
+    {
+      widgetName: string;
+      widgetProviderInfo: WidgetProviderInfoParams;
+    },
+  ];
+}> = (config, { widgets }) => {
+  const applyWidgetConfigs = (currentConfig: any) => {
+    return widgets.reduce((acc, widgetConfig) => {
+      return withPlugins(acc, [
+        [withWidgetProviderInfo, widgetConfig],
+        [withWidgetCodeSync, { widgetName: widgetConfig.widgetName }],
+      ]);
+    }, currentConfig);
+  };
+
   return withPlugins(config, [
     withDependencies,
-    [withWidgetProviderInfo, widgetProviderInfo],
-    withWidgetCodeSync,
-    [withWidgetManifest, { widgetInfoXml: widgetProviderInfo.fileName }],
+    applyWidgetConfigs,
+    withWidgetManifest,
     withWidgetAssets,
   ]);
 };

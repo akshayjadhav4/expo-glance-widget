@@ -5,24 +5,22 @@ import {
 } from "@expo/config-plugins";
 import fs from "fs";
 import path from "path";
-import { WidgetManifestOptions } from "./types";
+import { toSnakeCase } from "./utils";
 
-function getReceiverClassName(widgetDir: string): string | null {
-  const files = fs.readdirSync(widgetDir);
-  const receiverFile = files.find((f) => f.endsWith("Receiver.kt"));
-
-  if (!receiverFile) return null;
-
-  const content = fs.readFileSync(path.join(widgetDir, receiverFile), "utf-8");
+function getReceiverClassNames(widgetDir: string): string[] {
+  const files = fs
+    .readdirSync(widgetDir)
+    .filter((f) => f.endsWith("Receiver.kt"));
   const receiverRegex = /class\s+(\w+Receiver)\s*:/;
-  const match = receiverRegex.exec(content);
-  return match?.[1] ?? path.basename(receiverFile, ".kt");
+
+  return files.map((file) => {
+    const content = fs.readFileSync(path.join(widgetDir, file), "utf-8");
+    const match = receiverRegex.exec(content);
+    return match?.[1] ?? path.basename(file, ".kt");
+  });
 }
 
-export const withWidgetManifest: ConfigPlugin<WidgetManifestOptions> = (
-  config,
-  props
-) => {
+export const withWidgetManifest: ConfigPlugin = (config) => {
   return withAndroidManifest(config, (config) => {
     const manifest = config.modResults;
     const app = AndroidConfig.Manifest.getMainApplication(manifest);
@@ -31,48 +29,51 @@ export const withWidgetManifest: ConfigPlugin<WidgetManifestOptions> = (
       throw new Error("Main <application> not found in AndroidManifest.xml");
 
     const widgetDir = path.join(config.modRequest.projectRoot, "widgets");
-    const receiverClass = getReceiverClassName(widgetDir);
+    const receiverClasses = getReceiverClassNames(widgetDir);
 
-    if (!receiverClass) {
-      throw new Error("No Receiver class found in widgets/ directory");
+    if (!receiverClasses.length) {
+      throw new Error("No Receiver classes found in widgets/ directory");
     }
-    const resourcePath = `@xml/${props.widgetInfoXml}`;
 
-    // avoid duplicates
-    const alreadyExists = app.receiver?.some(
-      (r) => r.$["android:name"] === `.widgets.${receiverClass}`
-    );
+    app.receiver = app.receiver || [];
 
-    if (!alreadyExists) {
-      app.receiver = app.receiver || [];
+    receiverClasses.forEach((receiverClass) => {
+      // Compute resourcePath dynamically based on receiverClass
+      const resourcePath = `@xml/${toSnakeCase(receiverClass.replace(/Receiver$/, ""))}_info`;
+      const androidName = `.widgets.${receiverClass}`;
+      const alreadyExists = app.receiver!.some(
+        (r) => r.$["android:name"] === androidName
+      );
 
-      app.receiver.push({
-        $: {
-          "android:name": `.widgets.${receiverClass}`,
-          "android:exported": "true",
-        },
-        "intent-filter": [
-          {
-            action: [
-              {
-                $: {
-                  "android:name": "android.appwidget.action.APPWIDGET_UPDATE",
+      if (!alreadyExists) {
+        app.receiver!.push({
+          $: {
+            "android:name": androidName,
+            "android:exported": "true",
+          },
+          "intent-filter": [
+            {
+              action: [
+                {
+                  $: {
+                    "android:name": "android.appwidget.action.APPWIDGET_UPDATE",
+                  },
                 },
-              },
-            ],
-          },
-        ],
-        // @ts-ignore
-        "meta-data": [
-          {
-            $: {
-              "android:name": "android.appwidget.provider",
-              "android:resource": resourcePath,
+              ],
             },
-          },
-        ],
-      });
-    }
+          ],
+          // @ts-ignore
+          "meta-data": [
+            {
+              $: {
+                "android:name": "android.appwidget.provider",
+                "android:resource": resourcePath,
+              },
+            },
+          ],
+        });
+      }
+    });
 
     return config;
   });

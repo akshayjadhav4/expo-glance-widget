@@ -1,5 +1,4 @@
 export interface WidgetProviderInfoParams {
-  fileName: string;
   widgetName: string;
   updatePeriodMillis: number;
   description?: string;
@@ -15,7 +14,3 @@ export interface WidgetProviderInfoParams {
   widgetCategory?: string;
   widgetFeatures?: string;
 }
-
-export type WidgetManifestOptions = {
-  widgetInfoXml: string;
-};
