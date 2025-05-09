@@ -1,17 +1,17 @@
 package com.anonymous.glancewidgetdemo.widgets
 
 import android.content.Context
-import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
-import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.ImageProvider
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.components.Scaffold
+import androidx.glance.appwidget.components.TitleBar
 import androidx.glance.appwidget.provideContent
-import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.anonymous.glancewidgetdemo.R
 
 class MyAppWidget : GlanceAppWidget() {
 
@@ -23,8 +23,17 @@ class MyAppWidget : GlanceAppWidget() {
 
         provideContent {
             GlanceTheme {
-                Scaffold(backgroundColor = GlanceTheme.colors.widgetBackground, modifier = GlanceModifier.padding(16.dp)){
-                    Text("Hello Widget", style = TextStyle(color = GlanceTheme.colors.onSurface))
+                Scaffold(
+                    backgroundColor = GlanceTheme.colors.widgetBackground,
+                    titleBar = {
+                        TitleBar(
+                            startIcon = ImageProvider(R.drawable.react_logo),
+                            title = "Glance Widget",
+                        )
+                    }
+
+                ) {
+                    Text("Hello React Native", style = TextStyle(color = GlanceTheme.colors.onSurface))
                 }
             }
         }

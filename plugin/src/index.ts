@@ -1,6 +1,7 @@
 import { ConfigPlugin, withPlugins } from "@expo/config-plugins";
 import { WidgetProviderInfoParams } from "./types";
 import { withDependencies } from "./withDependencies";
+import withWidgetAssets from "./withWidgetAssets";
 import { withWidgetCodeSync } from "./withWidgetCodeSync";
 import { withWidgetManifest } from "./withWidgetManifest";
 import { withWidgetProviderInfo } from "./withWidgetProviderInfo";
@@ -13,6 +14,7 @@ const withGlance: ConfigPlugin<{
     [withWidgetProviderInfo, widgetProviderInfo],
     withWidgetCodeSync,
     [withWidgetManifest, { widgetInfoXml: widgetProviderInfo.fileName }],
+    withWidgetAssets,
   ]);
 };
 
