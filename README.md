@@ -140,3 +140,6 @@ Widgets can be styled using `GlanceTheme.colors` to support light/dark themes an
 
 </div>
 
+## Inspiration
+
+This plugin was inspired by [expo-apple-targets](https://github.com/EvanBacon/expo-apple-targets) by *EvanBacon*, which simplifies integrating iOS extensions into Expo prebuild. The goal here is to bring similar support to Android for homescreen widgets using Jetpack Glance.
