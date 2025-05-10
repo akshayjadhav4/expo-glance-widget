@@ -56,12 +56,11 @@
               "widgetName": "ToolbarWidget",
               "widgetProviderInfo": {
                 "description": "Tools",
-                "minWidth": "128dp",
-                "minHeight": "50dp",
-                "minResizeWidth": "128dp",
-                "minResizeHeight": "50dp",
-                "resizeMode": "horizontal|vertical",
-                "widgetCategory": "home_screen"
+                "minWidth": "76dp",
+                "minHeight": "150dp",
+                "resizeMode": "vertical",
+                "widgetCategory": "home_screen",
+                "updatePeriodMillis": 0
               }
             }
           ]

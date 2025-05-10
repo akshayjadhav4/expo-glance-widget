@@ -17,7 +17,7 @@ import androidx.glance.text.TextStyle
 import com.anonymous.glancewidgetdemo.MainActivity
 import com.anonymous.glancewidgetdemo.R
 
-class MyAppWidget : GlanceAppWidget() {
+class HomeWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
