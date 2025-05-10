@@ -1,50 +1,142 @@
-# Welcome to your Expo app 👋
+# Expo Android Glance Widget Plugin
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This Expo config plugin enables Jetpack Glance Android widgets inside a React Native project using the Expo prebuild system.
 
-## Get started
+## ✨ Features
 
-1. Install dependencies
+* Generates `AppWidget` and `WidgetReceiver` Kotlin files.
+* Adds Glance dependencies in `build.gradle`.
+* Syncs widget source code from a `/widgets` folder into the native project during prebuild.
+* Creates `res/xml` files for `AppWidgetProviderInfo` metadata during prebuild.
+* Injects `<receiver>` entries into `AndroidManifest.xml`.
+* Supports widget image and XML assets.
 
-   ```bash
-   npm install
-   ```
+## 🚀 Getting Started
 
-2. Start the app
+### Clone the Repository
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+To get started, clone the repository to your local machine:
 
 ```bash
-npm run reset-project
+git clone https://github.com/akshayjadhav4/expo-glance-widget.git
+cd expo-glance-widget
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Install Dependencies and Build
 
-## Learn more
+Before using the plugin, install the required dependencies:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Then build the plugin:
 
-## Join the community
+```bash
+npm run build
+```
 
-Join our community of developers creating universal apps.
+> After build, run `npm install` again to re-link the compiled output from `dist/`. This step ensures the plugin code is registered correctly for use with Expo.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Configure the Plugin
+
+Link the plugin in your `app.json` or `app.config.js`:
+
+```js
+plugins: [
+  [
+    "./app.plugin.js",
+    {
+      "widgets": [
+        {
+          "widgetName": "HomeWidget",
+          "widgetProviderInfo": {
+            "description": "Home",
+            "minWidth": "128dp",
+            "minHeight": "50dp",
+            "minResizeWidth": "128dp",
+            "minResizeHeight": "50dp",
+            "resizeMode": "horizontal|vertical",
+            "widgetCategory": "home_screen"
+          }
+        }
+      ]
+    }
+  ]
+]
+```
+
+### Generate Android Project
+
+Run the following command to generate the `android/` directory and apply the plugin:
+
+```bash
+npx expo prebuild -p android --clean
+```
+
+### Widget File Structure
+
+Write your Jetpack Glance widget code outside the Android folder:
+
+```
+/widgets
+  ├── MyAppWidget.kt
+  ├── MyAppWidgetReceiver.kt
+  └── assets
+       ├── plus_icon.png
+       └── background.xml
+```
+
+This structure gets synced to the Android project automatically during prebuild.
+
+### ⚠️ Important
+
+After **every change** in `/widgets`, rerun:
+
+```bash
+npx expo prebuild -p android
+```
+
+## 🔄 How It Works
+
+* On `expo prebuild`, the plugin:
+
+  * Add dependencies for glance plugin in `android/app/build.gradle`
+  * Creates `res/xml/*.xml` provider files
+  * Inserts receivers into the manifest dynamically
+  * Syncs Kotlin files from `/widgets/` into the Android `Main` source set
+  * Copies supported image assets into `res/drawable`
+  * Adds strings to `strings.xml` if using `@string/...` references
+
+## ⚡ Supported Assets
+
+* `.png`, `.jpg`, `.jpeg`, `.webp`, `.xml`
+* Ignores unsupported files (e.g. `.svg`)
+* Skips files with invalid Android resource names (e.g. `react-logo.png` ❌)
+
+## Dynamic Theming
+
+Widgets can be styled using `GlanceTheme.colors` to support light/dark themes and Material You surfaces like `primary`, `surfaceVariant`, and `onSurface`.
+
+
+## Demo
+
+<div style="display: flex; justify-content: space-around; align-items: center; gap: 20px;">
+
+<div style="text-align: center;">
+   <img src="demo/two.png" alt="Widget picker interface showing a list of available widgets with a highlighted selection." width="200">
+   <p>Widget Picker</p>
+</div>
+
+<div style="text-align: center;">
+   <img src="demo/one.png" alt="A preview of a single widget displaying weather information with a clean and minimal design." width="200">
+   <p>Theme One</p>
+</div>
+
+<div style="text-align: center;">
+   <img src="demo/three.png" alt="Another widget preview showcasing a calendar view with highlighted dates." width="200">
+   <p>Theme Two</p>
+</div>
+
+</div>
+
