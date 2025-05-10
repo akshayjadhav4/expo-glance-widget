@@ -36,7 +36,7 @@ Then build the plugin:
 npm run build
 ```
 
-> After build, run `npm install` again to re-link the compiled output from `dist/`. This step ensures the plugin code is registered correctly for use with Expo.
+> After build, run `npm install` again to re-link the compiled output from `build/`. This step ensures the plugin code is registered correctly for use with Expo.
 
 ### Configure the Plugin
 
